@@ -19,7 +19,7 @@
         android:paddingRight="35dp"
         android:background="@drawable/rounded_corner"
         android:textColor="#000"
-        android:singleLine="true" />
+        android:singleLine="true"/>
 
     <Button
         android:id="@+id/searchButton"
@@ -29,12 +29,12 @@
         android:layout_alignTop="@id/autoCompleteTextView"
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
-        android:background="@android:drawable/ic_search_category_default" />
+        android:background="@android:drawable/ic_search_category_default"/>
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launcher"/>
 
 </RelativeLayout>

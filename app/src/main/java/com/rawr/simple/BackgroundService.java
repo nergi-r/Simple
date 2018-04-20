@@ -5,18 +5,26 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BackgroundService extends Service {
 
-  private View rootView;
+  private ViewGroup rootView;
+  private View searchImageRootView;
   private WindowManager windowManager;
 
   public BackgroundService() {
@@ -34,6 +42,7 @@ public class BackgroundService extends Service {
 
     final FloatingActionButton floatingActionButton = new FloatingActionButton(this);
     rootView = floatingActionButton.getRootView();
+
     final ImageView icon = floatingActionButton.getIconView();
 
     final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -50,7 +59,6 @@ public class BackgroundService extends Service {
 
     windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
     windowManager.addView(rootView, params);
-
 //    final Handler handler = new Handler();
 
     icon.setOnTouchListener(new View.OnTouchListener() {
