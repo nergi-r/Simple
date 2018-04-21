@@ -34,7 +34,7 @@ public class FloatingActionButton {
   private static final float SEARCH_IMAGE_CONTAINER_MARGIN = 30;
 
   private final Context context;
-  private final ViewGroup rootView;
+  private final BackButtonAwareRelativeLayout rootView;
   private final ImageView iconView;
   private final AutoCompleteTextView searchView;
   private final Button searchBtn;
@@ -48,7 +48,7 @@ public class FloatingActionButton {
 
   public FloatingActionButton(final Context context) {
     this.context = context;
-    rootView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.layout_fab, null);
+    rootView = (BackButtonAwareRelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_fab, null);
     iconView = rootView.findViewById(R.id.imageView);
     searchView = rootView.findViewById(R.id.autoCompleteTextView);
     searchBtn = rootView.findViewById(R.id.searchButton);
@@ -98,7 +98,7 @@ public class FloatingActionButton {
     searchImageContainer.getRecyclerView().addOnScrollListener(scrollListener);
   }
 
-  public ViewGroup getRootView() {
+  public BackButtonAwareRelativeLayout getRootView() {
     return rootView;
   }
 

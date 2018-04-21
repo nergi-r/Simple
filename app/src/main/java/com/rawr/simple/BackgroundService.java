@@ -3,29 +3,21 @@ package com.rawr.simple;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
-import java.util.List;
+public class BackgroundService extends Service
+    implements BackButtonAwareRelativeLayout.BackButtonListener {
 
-public class BackgroundService extends Service {
-
-  private ViewGroup rootView;
-  private View searchImageRootView;
+  private FloatingActionButton floatingActionButton;
+  private BackButtonAwareRelativeLayout rootView;
   private WindowManager windowManager;
+  private WindowManager.LayoutParams params;
+  private boolean isFocused;
 
   public BackgroundService() {
 
@@ -40,12 +32,13 @@ public class BackgroundService extends Service {
   public void onCreate() {
     super.onCreate();
 
-    final FloatingActionButton floatingActionButton = new FloatingActionButton(this);
+    floatingActionButton = new FloatingActionButton(this);
     rootView = floatingActionButton.getRootView();
+    rootView.setBackButtonListener(this);
 
     final ImageView icon = floatingActionButton.getIconView();
 
-    final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+    params = new WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.TYPE_PHONE,
@@ -67,7 +60,6 @@ public class BackgroundService extends Service {
       private int initialY;
       private float initialTouchX;
       private float initialTouchY;
-      private boolean focused;
 
 //      final Runnable longPressed = new Runnable() {
 //        public void run() {
@@ -92,12 +84,12 @@ public class BackgroundService extends Service {
 
           case MotionEvent.ACTION_UP:
             if (lastAction == MotionEvent.ACTION_DOWN) {
-              focused = !focused;
+              isFocused = !isFocused;
 
-              if(focused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+              if (isFocused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
               else params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
-              floatingActionButton.toggleView(focused);
+              floatingActionButton.toggleView(isFocused);
               windowManager.updateViewLayout(rootView, params);
             }
 
@@ -111,7 +103,7 @@ public class BackgroundService extends Service {
             int displacementX = Math.abs((int) (motionEvent.getRawX() - initialTouchX));
             int displacementY = Math.abs((int) (motionEvent.getRawY() - initialTouchY));
 
-            if(displacementX >= 1 || displacementY >= 1) {
+            if (displacementX >= 1 || displacementY >= 1) {
               params.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
               params.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
 
@@ -127,6 +119,16 @@ public class BackgroundService extends Service {
         return false;
       }
     });
+  }
+
+  @Override
+  public void onBackButtonPressed() {
+    if (isFocused) {
+      isFocused = false;
+      params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+      floatingActionButton.toggleView(false);
+      windowManager.updateViewLayout(rootView, params);
+    }
   }
 
   @Override
