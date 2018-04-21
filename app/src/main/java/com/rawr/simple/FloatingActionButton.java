@@ -1,6 +1,7 @@
 package com.rawr.simple;
 
 import android.content.Context;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -91,8 +92,8 @@ public class FloatingActionButton {
   }
 
   public void toggleView(boolean toggled) {
-    toggleIcon(toggled);
     toggleSearch(toggled);
+    toggleIcon(toggled);
     rootView.removeView(searchImageContainer.getRecyclerView());
   }
 
@@ -108,14 +109,16 @@ public class FloatingActionButton {
 
   private void toggleSearch(boolean toggled) {
     if (toggled) {
-      searchBtn.setVisibility(View.VISIBLE);
       searchView.setVisibility(View.VISIBLE);
-      searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
 
-      Animation fadeIn = new AlphaAnimation(0, 1);
-      fadeIn.setInterpolator(new DecelerateInterpolator());
-      fadeIn.setDuration(1000);
-      searchView.setAnimation(fadeIn);
+      TransitionManager.beginDelayedTransition(rootView);
+      searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
+      searchBtn.setVisibility(View.VISIBLE);
+
+//      Animation fadeIn = new AlphaAnimation(0, 1);
+//      fadeIn.setInterpolator(new DecelerateInterpolator());
+//      fadeIn.setDuration(1000);
+//      searchView.setAnimation(fadeIn);
     } else {
       searchBtn.setVisibility(View.INVISIBLE);
       searchView.setVisibility(View.INVISIBLE);
@@ -136,7 +139,7 @@ public class FloatingActionButton {
 
           for (int index = 0; index < results.length(); index++) {
             JSONObject thumbnailImage = results.getJSONObject(index).getJSONObject("image");
-            final String thumbnailLink = thumbnailImage.getString("thumbnailLink");
+            final String thumbnailLink = results.getJSONObject(index).getString("link");
             final int height = thumbnailImage.getInt("thumbnailHeight");
             final int width = thumbnailImage.getInt("thumbnailWidth");
             Log.i("imageUrl " + index, thumbnailLink + " " + height + " " + width);
