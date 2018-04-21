@@ -1,14 +1,13 @@
-package com.rawr.simple;
+package com.rawr.simple.seach.image;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.rawr.simple.GridSpacingItemDecoration;
+import com.rawr.simple.R;
 
 public class SearchImageContainer {
 
@@ -19,16 +18,20 @@ public class SearchImageContainer {
   public SearchImageContainer(Context context) {
     this.context = context;
 
-    final RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-    recyclerView = (RecyclerView) LayoutInflater
-                                      .from(context)
-                                      .inflate(R.layout.layout_image_container, null)
-                                      .findViewById(R.id.rv_image_container);
+    final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(
+        2, StaggeredGridLayoutManager.VERTICAL);
+    layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+
+    recyclerView = LayoutInflater
+        .from(context)
+        .inflate(R.layout.layout_image_container, null)
+        .findViewById(R.id.rv_image_container);
     ((ViewGroup) recyclerView.getParent()).removeView(recyclerView);
     recyclerView.setHasFixedSize(true);
     recyclerView.setLayoutManager(layoutManager);
     adapter = new SearchImageResultAdapter(context);
     recyclerView.setAdapter(adapter);
+    recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 25, true, 0));
   }
 
   public RecyclerView getRecyclerView() {

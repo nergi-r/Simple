@@ -1,10 +1,12 @@
-package com.rawr.simple;
+package com.rawr.simple.seach.image;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-public class SearchImageViewHolder extends RecyclerView.ViewHolder  {
+import com.rawr.simple.R;
+
+public class SearchImageViewHolder extends RecyclerView.ViewHolder {
 
   private ImageView imageView;
 

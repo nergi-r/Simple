@@ -8,6 +8,8 @@
 
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView"
+        android:inputType="text"
+        android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -18,8 +20,7 @@
         android:paddingLeft="30dp"
         android:paddingRight="35dp"
         android:background="@drawable/rounded_corner"
-        android:textColor="#000"
-        android:singleLine="true"/>
+        android:textColor="#000"/>
 
     <Button
         android:id="@+id/searchButton"
