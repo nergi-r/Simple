@@ -28,13 +28,11 @@ public class Search {
 
   public Search build() {
     Uri.Builder uriBuilder = new Uri.Builder()
-        .scheme("https")
-        .authority("www.googleapis.com")
-        .appendPath("customsearch")
-        .appendPath("v1")
-        .encodedQuery("cx=" + context.getString(R.string.custom_search_engine_id))
+        .scheme("http")
+        .encodedAuthority("192.168.42.98:3000")
+        .appendPath("api")
+        .appendPath("search")
         .appendQueryParameter("gl", "id")
-        .appendQueryParameter("key", context.getString(R.string.custom_search_api_key))
         .appendQueryParameter("q", query)
         .appendQueryParameter("searchType", searchType)
         .appendQueryParameter("start", String.valueOf(startAt));

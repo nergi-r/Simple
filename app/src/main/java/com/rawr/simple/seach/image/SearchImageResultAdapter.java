@@ -66,4 +66,9 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
     this.searchImageResults = searchImageResults;
     notifyDataSetChanged();
   }
+
+  public void reset() {
+    searchImageResults.clear();
+    notifyDataSetChanged();
+  }
 }

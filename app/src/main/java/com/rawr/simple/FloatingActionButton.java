@@ -110,6 +110,7 @@ public class FloatingActionButton {
     toggleSearch(toggled);
     toggleIcon(toggled);
     rootView.removeView(searchImageContainer.getRecyclerView());
+    searchImageContainer.getAdapter().reset();
     scrollListener.resetState();
   }
 
@@ -150,14 +151,14 @@ public class FloatingActionButton {
         try {
           toggleSearch(false);
 
-          JSONArray results = jsonObject.getJSONArray("items");
+          JSONArray results = jsonObject.getJSONArray("data");
           List<SearchImage> searchImageResults = new ArrayList<>();
 
           for (int index = 0; index < results.length(); index++) {
-            JSONObject thumbnailImage = results.getJSONObject(index).getJSONObject("image");
-            final String thumbnailLink = results.getJSONObject(index).getString("link");
-            final int height = thumbnailImage.getInt("thumbnailHeight");
-            final int width = thumbnailImage.getInt("thumbnailWidth");
+            JSONObject item = results.getJSONObject(index);
+            final String thumbnailLink = item.getString("link");
+            final int height = item.getInt("height");
+            final int width = item.getInt("width");
             Log.i("imageUrl " + index, thumbnailLink + " " + height + " " + width);
 
             searchImageResults.add(new SearchImage(thumbnailLink, width, height));
@@ -182,16 +183,16 @@ public class FloatingActionButton {
       @Override
       public void completed(JSONObject jsonObject) {
         try {
-          JSONArray results = jsonObject.getJSONArray("items");
+          JSONArray results = jsonObject.getJSONArray("data");
           List<SearchImage> searchImageResults = searchImageContainer
               .getAdapter()
               .getSearchImageResults();
 
           for (int index = 0; index < results.length(); index++) {
-            JSONObject thumbnailImage = results.getJSONObject(index).getJSONObject("image");
-            final String thumbnailLink = results.getJSONObject(index).getString("link");
-            final int height = thumbnailImage.getInt("thumbnailHeight");
-            final int width = thumbnailImage.getInt("thumbnailWidth");
+            JSONObject item = results.getJSONObject(index);
+            final String thumbnailLink = item.getString("link");
+            final int height = item.getInt("height");
+            final int width = item.getInt("width");
             Log.i("imageUrl " + index, thumbnailLink + " " + height + " " + width);
 
             searchImageResults.add(new SearchImage(thumbnailLink, width, height));
