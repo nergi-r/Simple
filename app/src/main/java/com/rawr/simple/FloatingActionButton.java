@@ -127,15 +127,9 @@ public class FloatingActionButton {
   private void toggleSearch(boolean toggled) {
     if (toggled) {
       searchView.setVisibility(View.VISIBLE);
-
       TransitionManager.beginDelayedTransition(rootView);
       searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
       searchBtn.setVisibility(View.VISIBLE);
-
-//      Animation fadeIn = new AlphaAnimation(0, 1);
-//      fadeIn.setInterpolator(new DecelerateInterpolator());
-//      fadeIn.setDuration(1000);
-//      searchView.setAnimation(fadeIn);
     } else {
       searchBtn.setVisibility(View.INVISIBLE);
       searchView.setVisibility(View.INVISIBLE);
@@ -164,6 +158,7 @@ public class FloatingActionButton {
             searchImageResults.add(new SearchImage(thumbnailLink, width, height));
           }
 
+          TransitionManager.beginDelayedTransition(rootView);
           searchImageContainer.getAdapter().setSearchImageResults(searchImageResults);
           rootView.addView(searchImageContainer.getRecyclerView(), 0, searchImageContainerParams);
         } catch (Exception e) {

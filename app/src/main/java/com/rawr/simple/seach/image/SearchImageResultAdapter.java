@@ -48,7 +48,8 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
 
     Glide.with(context)
         .load(searchImage.getUrl())
-        .placeholder(android.R.drawable.ic_menu_compass)
+        .thumbnail(Glide.with(context).load(R.raw.spin))
+        .crossFade()
         .into(imageView);
   }
 
