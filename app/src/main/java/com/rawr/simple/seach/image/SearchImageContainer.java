@@ -12,13 +12,14 @@ import com.rawr.simple.R;
 public class SearchImageContainer {
 
   private final Context context;
+  private final StaggeredGridLayoutManager layoutManager;
   private final RecyclerView recyclerView;
   private final SearchImageResultAdapter adapter;
 
   public SearchImageContainer(Context context) {
     this.context = context;
 
-    final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(
+    layoutManager = new StaggeredGridLayoutManager(
         2, StaggeredGridLayoutManager.VERTICAL);
     layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
 
@@ -32,6 +33,7 @@ public class SearchImageContainer {
     adapter = new SearchImageResultAdapter(context);
     recyclerView.setAdapter(adapter);
     recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 25, true, 0));
+    recyclerView.setItemAnimator(null);
   }
 
   public RecyclerView getRecyclerView() {
@@ -40,5 +42,9 @@ public class SearchImageContainer {
 
   public SearchImageResultAdapter getAdapter() {
     return adapter;
+  }
+
+  public StaggeredGridLayoutManager getLayoutManager() {
+    return layoutManager;
   }
 }

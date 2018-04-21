@@ -16,12 +16,14 @@ public class Search {
   private final Context context;
   private final String query;
   private final String searchType;
+  private int startAt;
   private String url;
 
   public Search(Context context, String query, String searchType) {
     this.context = context;
     this.query = query;
     this.searchType = searchType;
+    this.startAt = 1;
   }
 
   public Search build() {
@@ -34,14 +36,15 @@ public class Search {
         .appendQueryParameter("gl", "id")
         .appendQueryParameter("key", context.getString(R.string.custom_search_api_key))
         .appendQueryParameter("q", query)
-        .appendQueryParameter("searchType", searchType);
+        .appendQueryParameter("searchType", searchType)
+        .appendQueryParameter("start", String.valueOf(startAt));
 
     this.url = uriBuilder.build().toString();
 
     return this;
   }
 
-  public void execute(final JSONRequestCallback callback) {
+  public Search execute(final JSONRequestCallback callback) {
     Log.i("Search", "executed with url: " + url);
 
     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -62,5 +65,12 @@ public class Search {
         });
 
     VolleyRequestQueue.getInstance(context).addToRequestQueue(jsonObjectRequest);
+
+    return this;
+  }
+
+  public Search nextPage() {
+    startAt += 10;
+    return this;
   }
 }
