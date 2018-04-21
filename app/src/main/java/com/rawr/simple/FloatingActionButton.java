@@ -108,10 +108,10 @@ public class FloatingActionButton {
 
   public void toggleView(boolean toggled) {
     toggleSearch(toggled);
-    toggleIcon(toggled);
     rootView.removeView(searchImageContainer.getRecyclerView());
     searchImageContainer.getAdapter().reset();
     scrollListener.resetState();
+    toggleIcon(toggled);
   }
 
   private void toggleIcon(boolean toggled) {
@@ -119,6 +119,7 @@ public class FloatingActionButton {
       iconView.getLayoutParams().width = (int) LayoutUtil.pxFromDp(context, ICON_VIEW_TOGGLED_SIZE);
       iconView.getLayoutParams().height = (int) LayoutUtil.pxFromDp(context, ICON_VIEW_TOGGLED_SIZE);
     } else {
+      TransitionManager.beginDelayedTransition(rootView);
       iconView.getLayoutParams().width = (int) LayoutUtil.pxFromDp(context, ICON_VIEW_SIZE);
       iconView.getLayoutParams().height = (int) LayoutUtil.pxFromDp(context, ICON_VIEW_SIZE);
     }
