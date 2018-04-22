@@ -13,8 +13,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.rawr.simple.api.Search;
+import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
+import com.rawr.simple.layout.EndlessRecyclerViewScrollListener;
+import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.seach.image.SearchImage;
 import com.rawr.simple.seach.image.SearchImageContainer;
+import com.rawr.simple.seach.suggestion.SearchSuggestion;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +45,8 @@ public class FloatingActionButton {
 
   private EndlessRecyclerViewScrollListener scrollListener;
 
-  private Search searchUtil;
+  private final SearchSuggestion searchSuggestion;
+  private final Search searchUtil;
 
   public FloatingActionButton(final Context context) {
     this.context = context;
@@ -51,6 +57,8 @@ public class FloatingActionButton {
 
     searchView.setVisibility(View.INVISIBLE);
     searchBtn.setVisibility(View.INVISIBLE);
+    searchUtil = new Search(context);
+    searchSuggestion = new SearchSuggestion(context, searchView);
 
     searchImageContainer = new SearchImageContainer(context);
     searchImageContainerParams = new RelativeLayout.LayoutParams(
@@ -63,10 +71,12 @@ public class FloatingActionButton {
 
     searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
-      public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+      public boolean onEditorAction(TextView textView, int keyCode, KeyEvent keyEvent) {
         // Done button or Enter
-        if (i == 0 || i == 6) {
+        if (keyCode == 0 || keyCode == 6) {
           String query = searchView.getText().toString();
+          if(query.length() == 0) return false;
+
           Log.i("Query", query);
           searchImage(query);
         }
@@ -78,6 +88,8 @@ public class FloatingActionButton {
       @Override
       public void onClick(View view) {
         String query = searchView.getText().toString();
+        if(query.length() == 0) return;
+
         Log.i("Query", query);
         searchImage(query);
       }
@@ -86,8 +98,6 @@ public class FloatingActionButton {
     scrollListener = new EndlessRecyclerViewScrollListener(searchImageContainer.getLayoutManager()) {
       @Override
       public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-        String query = searchView.getText().toString();
-        Log.i("Query", query + " page: " + page + 1);
         searchNextImage();
       }
     };
@@ -104,9 +114,19 @@ public class FloatingActionButton {
 
   public void toggleView(boolean toggled) {
     toggleSearch(toggled);
-    rootView.removeView(searchImageContainer.getRecyclerView());
-    searchImageContainer.getAdapter().reset();
-    scrollListener.resetState();
+    if(toggled == false) {
+      rootView.removeView(searchImageContainer.getRecyclerView());
+      searchImageContainer.getRecyclerView().removeOnScrollListener(scrollListener);
+      searchImageContainer.reset();
+      scrollListener.reset();
+      scrollListener = new EndlessRecyclerViewScrollListener(searchImageContainer.getLayoutManager()) {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+          searchNextImage();
+        }
+      };
+      searchImageContainer.getRecyclerView().addOnScrollListener(scrollListener);
+    }
     toggleIcon(toggled);
   }
 
@@ -133,10 +153,11 @@ public class FloatingActionButton {
       searchView.setWidth(0);
     }
     searchView.setText("");
+    searchSuggestion.resetSuggestion();
   }
 
   private void searchImage(String query) {
-    searchUtil = new Search(context, query, "image").build().execute(new JSONRequestCallback() {
+    searchUtil.reset(query, "image").build().execute(new JSONRequestCallback() {
       @Override
       public void completed(JSONObject jsonObject) {
         try {
@@ -157,7 +178,7 @@ public class FloatingActionButton {
           searchUtil.nextPage(results.length());
 
           TransitionManager.beginDelayedTransition(rootView);
-          searchImageContainer.getAdapter().setSearchImageResults(searchImageResults);
+          searchImageContainer.setSearchImageResults(searchImageResults);
           rootView.addView(searchImageContainer.getRecyclerView(), 0, searchImageContainerParams);
         } catch (Exception e) {
 
@@ -177,9 +198,6 @@ public class FloatingActionButton {
       public void completed(JSONObject jsonObject) {
         try {
           JSONArray results = jsonObject.getJSONArray("data");
-          List<SearchImage> searchImageResults = searchImageContainer
-              .getAdapter()
-              .getSearchImageResults();
 
           for (int index = 0; index < results.length(); index++) {
             JSONObject item = results.getJSONObject(index);
@@ -187,10 +205,9 @@ public class FloatingActionButton {
             final int height = item.getInt("height");
             final int width = item.getInt("width");
 
-            searchImageResults.add(new SearchImage(thumbnailLink, width, height));
+            searchImageContainer.addSearchImageResults(
+                new SearchImage(thumbnailLink, width, height));
           }
-
-          searchImageContainer.getAdapter().notifyDataSetChanged();
         } catch (Exception e) {
 
         }

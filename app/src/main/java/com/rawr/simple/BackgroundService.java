@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
+
 public class BackgroundService extends Service
     implements BackButtonAwareRelativeLayout.BackButtonListener {
 

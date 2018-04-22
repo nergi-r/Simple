@@ -1,4 +1,4 @@
-package com.rawr.simple;
+package com.rawr.simple.api;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,22 +8,32 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.rawr.simple.JSONRequestCallback;
+import com.rawr.simple.VolleyRequestQueue;
 
 import org.json.JSONObject;
 
 public class Search {
 
   private final Context context;
-  private final String query;
-  private final String searchType;
+  private String query;
+  private String searchType;
   private int startAt;
   private String url;
 
-  public Search(Context context, String query, String searchType) {
+  public Search(Context context) {
     this.context = context;
-    this.query = query;
-    this.searchType = searchType;
     this.startAt = 0;
+  }
+
+  public Search setQuery(String query) {
+    this.query = query;
+    return this;
+  }
+
+  public Search setSearchType(String searchType) {
+    this.searchType = searchType;
+    return this;
   }
 
   public Search build() {
@@ -69,6 +79,13 @@ public class Search {
 
   public Search nextPage(int offset) {
     startAt += offset;
+    return this;
+  }
+
+  public Search reset(String query, String searchType) {
+    this.query = query;
+    this.searchType = searchType;
+    startAt = 0;
     return this;
   }
 }

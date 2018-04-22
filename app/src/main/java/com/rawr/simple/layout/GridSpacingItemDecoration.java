@@ -1,4 +1,5 @@
-package com.rawr.simple;
+package com.rawr.simple.layout;
+
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;

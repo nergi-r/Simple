@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.rawr.simple.LayoutUtil;
+import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.R;
 
 import java.util.ArrayList;
@@ -63,9 +63,14 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
   }
 
   public void setSearchImageResults(List<SearchImage> searchImageResults) {
-    this.searchImageResults.clear();
+    reset();
     this.searchImageResults = searchImageResults;
     notifyDataSetChanged();
+  }
+
+  public void addSearchImageResults(SearchImage searchImage) {
+    this.searchImageResults.add(searchImage);
+    notifyItemInserted(searchImageResults.size());
   }
 
   public void reset() {

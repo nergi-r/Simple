@@ -1,4 +1,4 @@
-package com.rawr.simple;
+package com.rawr.simple.layout;
 
 import android.content.Context;
 
