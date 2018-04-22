@@ -7,10 +7,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -154,10 +150,11 @@ public class FloatingActionButton {
             final String thumbnailLink = item.getString("link");
             final int height = item.getInt("height");
             final int width = item.getInt("width");
-            Log.i("imageUrl " + index, thumbnailLink + " " + height + " " + width);
 
             searchImageResults.add(new SearchImage(thumbnailLink, width, height));
           }
+
+          searchUtil.nextPage(results.length());
 
           TransitionManager.beginDelayedTransition(rootView);
           searchImageContainer.getAdapter().setSearchImageResults(searchImageResults);
@@ -175,7 +172,7 @@ public class FloatingActionButton {
   }
 
   private void searchNextImage() {
-    searchUtil.nextPage().build().execute(new JSONRequestCallback() {
+    searchUtil.build().execute(new JSONRequestCallback() {
       @Override
       public void completed(JSONObject jsonObject) {
         try {
@@ -189,7 +186,6 @@ public class FloatingActionButton {
             final String thumbnailLink = item.getString("link");
             final int height = item.getInt("height");
             final int width = item.getInt("width");
-            Log.i("imageUrl " + index, thumbnailLink + " " + height + " " + width);
 
             searchImageResults.add(new SearchImage(thumbnailLink, width, height));
           }

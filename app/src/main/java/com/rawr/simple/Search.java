@@ -23,19 +23,19 @@ public class Search {
     this.context = context;
     this.query = query;
     this.searchType = searchType;
-    this.startAt = 1;
+    this.startAt = 0;
   }
 
   public Search build() {
     Uri.Builder uriBuilder = new Uri.Builder()
-        .scheme("http")
-        .encodedAuthority("192.168.42.98:3000")
+        .scheme("https")
+        .encodedAuthority("simple-backend-api.herokuapp.com")
         .appendPath("api")
         .appendPath("search")
-        .appendQueryParameter("gl", "id")
+        .appendPath("image")
+        .appendQueryParameter("mkt", "en-id")
         .appendQueryParameter("q", query)
-        .appendQueryParameter("searchType", searchType)
-        .appendQueryParameter("start", String.valueOf(startAt));
+        .appendQueryParameter("offset", String.valueOf(startAt));
 
     this.url = uriBuilder.build().toString();
 
@@ -67,8 +67,8 @@ public class Search {
     return this;
   }
 
-  public Search nextPage() {
-    startAt += 10;
+  public Search nextPage(int offset) {
+    startAt += offset;
     return this;
   }
 }
