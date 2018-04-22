@@ -48,12 +48,14 @@ public class BackgroundService extends Service
         PixelFormat.TRANSLUCENT);
 
     params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
-    params.gravity = Gravity.TOP | Gravity.LEFT;
+    params.gravity = Gravity.TOP | Gravity.START;
     params.x = 0;
     params.y = 100;
 
     windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-    windowManager.addView(rootView, params);
+    if (windowManager != null) {
+      windowManager.addView(rootView, params);
+    }
 //    final Handler handler = new Handler();
 
     icon.setOnTouchListener(new View.OnTouchListener() {

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.R;
 
@@ -50,6 +51,8 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
         .load(searchImage.getUrl())
         .thumbnail(Glide.with(context).load(R.raw.spin))
         .crossFade()
+        .skipMemoryCache(true)
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
         .into(imageView);
   }
 
@@ -74,6 +77,7 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
   }
 
   public void reset() {
+    Glide.get(context).clearMemory();
     searchImageResults.clear();
     notifyDataSetChanged();
   }

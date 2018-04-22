@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -49,7 +50,7 @@ public class SearchSuggestion {
 
                 for (int index = 0; index < jsonArray.length(); index++) {
                   String suggestion = jsonArray.getString(index);
-                  if (suggestions.contains(suggestion) == false) {
+                  if (!suggestions.contains(suggestion)) {
                     suggestions.add(suggestion);
                     adapter.add(suggestion);
                   }
@@ -64,7 +65,7 @@ public class SearchSuggestion {
                 searchView.setSelection(currentInput.length());
 
               } catch (Exception e) {
-
+                Log.e("Search Suggestion", "Fail to parse JSON");
               }
             }
 

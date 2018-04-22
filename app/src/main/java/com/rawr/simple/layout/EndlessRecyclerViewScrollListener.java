@@ -12,7 +12,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
   private final int startingPageIndex = 0;
   // The minimum amount of items to have below your current scroll position
   // before loading more.
-  private int visibleThreshold = 5;
+  private int visibleThreshold;
   // The current offset index of data you have loaded
   private int currentPage = 0;
   // The total number of items in the dataset after the last load
@@ -22,12 +22,12 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
   private StaggeredGridLayoutManager layoutManager;
 
-  public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
+  protected EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
     this.layoutManager = layoutManager;
-    visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
+    visibleThreshold = 5 * layoutManager.getSpanCount();
   }
 
-  public int getLastVisibleItem(int[] lastVisibleItemPositions) {
+  private int getLastVisibleItem(int[] lastVisibleItemPositions) {
     int maxSize = 0;
     for (int i = 0; i < lastVisibleItemPositions.length; i++) {
       if (i == 0) maxSize = lastVisibleItemPositions[0];

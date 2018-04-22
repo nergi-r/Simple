@@ -76,7 +76,6 @@ public class FloatingActionButton {
         if (keyCode == 0 || keyCode == 6) {
           String query = searchView.getText().toString();
           if(query.length() == 0) return false;
-
           Log.i("Query", query);
           searchImage(query);
         }
@@ -89,7 +88,6 @@ public class FloatingActionButton {
       public void onClick(View view) {
         String query = searchView.getText().toString();
         if(query.length() == 0) return;
-
         Log.i("Query", query);
         searchImage(query);
       }
@@ -114,7 +112,7 @@ public class FloatingActionButton {
 
   public void toggleView(boolean toggled) {
     toggleSearch(toggled);
-    if(toggled == false) {
+    if(!toggled) {
       rootView.removeView(searchImageContainer.getRecyclerView());
       searchImageContainer.getRecyclerView().removeOnScrollListener(scrollListener);
       searchImageContainer.reset();
@@ -181,7 +179,7 @@ public class FloatingActionButton {
           searchImageContainer.setSearchImageResults(searchImageResults);
           rootView.addView(searchImageContainer.getRecyclerView(), 0, searchImageContainerParams);
         } catch (Exception e) {
-
+          Log.i("Search Image", "Failed to parse JSON");
         }
       }
 
@@ -208,8 +206,10 @@ public class FloatingActionButton {
             searchImageContainer.addSearchImageResults(
                 new SearchImage(thumbnailLink, width, height));
           }
-        } catch (Exception e) {
 
+          searchUtil.nextPage(results.length());
+        } catch (Exception e) {
+          Log.i("Search Next Image", "Failed to parse JSON");
         }
       }
 
