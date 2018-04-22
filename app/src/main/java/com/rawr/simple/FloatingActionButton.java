@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rawr.simple.api.Search;
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
 import com.rawr.simple.layout.EndlessRecyclerViewScrollListener;
@@ -38,7 +41,7 @@ public class FloatingActionButton {
   private final BackButtonAwareRelativeLayout rootView;
   private final ImageView iconView;
   private final AutoCompleteTextView searchView;
-  private final Button searchBtn;
+  private final ImageView searchBtn;
 
   private final SearchImageContainer searchImageContainer;
   private final RelativeLayout.LayoutParams searchImageContainerParams;
@@ -80,16 +83,6 @@ public class FloatingActionButton {
           searchImage(query);
         }
         return false;
-      }
-    });
-
-    searchBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        String query = searchView.getText().toString();
-        if(query.length() == 0) return;
-        Log.i("Query", query);
-        searchImage(query);
       }
     });
 
@@ -141,6 +134,21 @@ public class FloatingActionButton {
 
   private void toggleSearch(boolean toggled) {
     if (toggled) {
+      searchView.setEnabled(true);
+
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+          (int) LayoutUtil.pxFromDp(context, 25),
+          (int) LayoutUtil.pxFromDp(context, 25));
+      params.rightMargin = params.topMargin = (int)LayoutUtil.pxFromDp(context,5);;
+      params.addRule(RelativeLayout.ALIGN_END, R.id.autoCompleteTextView);
+      params.addRule(RelativeLayout.ALIGN_TOP, R.id.autoCompleteTextView);
+      searchBtn.setLayoutParams(params);
+
+      Glide.with(context)
+          .load(android.R.drawable.ic_search_category_default)
+          .skipMemoryCache(true)
+          .diskCacheStrategy(DiskCacheStrategy.NONE)
+          .into(searchBtn);
       searchView.setVisibility(View.VISIBLE);
       TransitionManager.beginDelayedTransition(rootView);
       searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
@@ -155,6 +163,21 @@ public class FloatingActionButton {
   }
 
   private void searchImage(String query) {
+    searchView.setEnabled(false);
+    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+        (int) LayoutUtil.pxFromDp(context, 40),
+        (int) LayoutUtil.pxFromDp(context, 40));
+    params.rightMargin = 0;
+    params.topMargin = (int)LayoutUtil.pxFromDp(context,-2);
+    params.addRule(RelativeLayout.ALIGN_END, R.id.autoCompleteTextView);
+    params.addRule(RelativeLayout.ALIGN_TOP, R.id.autoCompleteTextView);
+    searchBtn.setLayoutParams(params);
+    Glide.with(context)
+        .load(R.raw.spin)
+        .asGif()
+        .skipMemoryCache(true)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .into(searchBtn);
     searchUtil.reset(query, "image").build().execute(new JSONRequestCallback() {
       @Override
       public void completed(JSONObject jsonObject) {
