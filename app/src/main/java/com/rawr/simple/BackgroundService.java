@@ -4,10 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
@@ -128,6 +130,24 @@ public class BackgroundService extends Service
   @Override
   public void onBackButtonPressed() {
     if (isFocused) {
+      final ImageView expandedImageView = floatingActionButton.getExpandedImageView();
+      if (expandedImageView.getVisibility() == View.VISIBLE) {
+        expandedImageView.animate().alpha(0).setDuration(250)
+            .setInterpolator(new DecelerateInterpolator())
+            .withEndAction(new Runnable() {
+              @Override
+              public void run() {
+                expandedImageView.getLayoutParams().width = 0;
+                expandedImageView.getLayoutParams().height = 0;
+                expandedImageView.setVisibility(View.INVISIBLE);
+                // since animate does not have imageAlpha,
+                // need to revert back alpha using the deprecated setAlpha function
+                expandedImageView.setAlpha((float)1.0);
+                expandedImageView.setImageDrawable(null);
+              }
+            });
+        return;
+      }
       isFocused = false;
       params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
       floatingActionButton.toggleView(false);

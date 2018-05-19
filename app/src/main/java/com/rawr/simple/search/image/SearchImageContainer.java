@@ -4,7 +4,9 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.rawr.simple.layout.GridSpacingItemDecoration;
 import com.rawr.simple.R;
@@ -14,12 +16,14 @@ import java.util.List;
 public class SearchImageContainer {
 
   private final Context context;
+  private final ImageView expandedImageView;
   private StaggeredGridLayoutManager layoutManager;
   private RecyclerView recyclerView;
   private SearchImageResultAdapter adapter;
 
-  public SearchImageContainer(Context context) {
+  public SearchImageContainer(Context context, ImageView expandedImageView) {
     this.context = context;
+    this.expandedImageView = expandedImageView;
     layoutManager = new StaggeredGridLayoutManager(
         2, StaggeredGridLayoutManager.VERTICAL);
     layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
@@ -33,7 +37,7 @@ public class SearchImageContainer {
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 25, true, 0));
     recyclerView.setItemAnimator(null);
-    adapter = new SearchImageResultAdapter(context);
+    adapter = new SearchImageResultAdapter(context, expandedImageView);
     recyclerView.setAdapter(adapter);
   }
 
@@ -64,7 +68,7 @@ public class SearchImageContainer {
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 25, true, 0));
     recyclerView.setItemAnimator(null);
-    adapter = new SearchImageResultAdapter(context);
+    adapter = new SearchImageResultAdapter(context, expandedImageView);
     recyclerView.setAdapter(adapter);
   }
 

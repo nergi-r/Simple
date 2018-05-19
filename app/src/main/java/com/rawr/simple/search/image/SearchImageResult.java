@@ -1,37 +1,32 @@
 package com.rawr.simple.search.image;
 
 public class SearchImageResult {
-  private String url;
-  private int width;
-  private int height;
+  private SearchImageResultAttributes thumbnail;
+  private SearchImageResultAttributes content;
 
-  public SearchImageResult(String url, int width, int height) {
-    this.url = url;
-    this.width = width;
-    this.height = height;
+  public SearchImageResult() {
   }
 
-  public String getUrl() {
-    return url;
+  public SearchImageResult(SearchImageResultAttributes thumbnail, SearchImageResultAttributes content) {
+    this.thumbnail = thumbnail;
+    this.content = content;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public SearchImageResultAttributes getThumbnail() {
+    return thumbnail;
   }
 
-  public int getWidth() {
-    return width;
+  public SearchImageResult setThumbnail(SearchImageResultAttributes thumbnail) {
+    this.thumbnail = thumbnail;
+    return this;
   }
 
-  public void setWidth(int width) {
-    this.width = width;
+  public SearchImageResultAttributes getContent() {
+    return content;
   }
 
-  public int getHeight() {
-    return height;
-  }
-
-  public void setHeight(int height) {
-    this.height = height;
+  public SearchImageResult setContent(SearchImageResultAttributes content) {
+    this.content = content;
+    return this;
   }
 }

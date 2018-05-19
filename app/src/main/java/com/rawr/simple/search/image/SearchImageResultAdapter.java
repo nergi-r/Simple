@@ -17,12 +17,15 @@ import java.util.List;
 
 public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageViewHolder> {
   private static final float SEARCH_IMAGE_DEFAULT_WIDTH = 135;
+  private static final float EXPAND_IMAGE_DEFAULT_WIDTH = 600;
 
   private final Context context;
+  private final ImageView expandedImageView;
   private List<SearchImageResult> searchImageResults;
 
-  public SearchImageResultAdapter(Context context) {
+  public SearchImageResultAdapter(Context context, ImageView expandedImageView) {
     this.context = context;
+    this.expandedImageView = expandedImageView;
     searchImageResults = new ArrayList<>();
   }
 
@@ -41,19 +44,47 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
     final SearchImageResult searchImageResult = searchImageResults.get(position);
     final ImageView imageView = holder.getImageView();
 
-    float scale = LayoutUtil.pxFromDp(context, SEARCH_IMAGE_DEFAULT_WIDTH) / searchImageResult.getWidth();
-    float width = scale * searchImageResult.getWidth();
-    float height = scale * searchImageResult.getHeight();
+    float scale = LayoutUtil.pxFromDp(context,
+        SEARCH_IMAGE_DEFAULT_WIDTH) / searchImageResult.getThumbnail().getWidth();
+    float width = scale * searchImageResult.getThumbnail().getWidth();
+    float height = scale * searchImageResult.getThumbnail().getHeight();
     imageView.getLayoutParams().width = (int) width;
     imageView.getLayoutParams().height = (int) height;
 
     Glide.with(context)
-        .load(searchImageResult.getUrl())
-        .thumbnail(Glide.with(context).load(R.raw.spin))
+        .load(searchImageResult.getThumbnail().getUrl())
+        .thumbnail(Glide.with(context).load(R.raw.flickr64))
         .crossFade()
         .skipMemoryCache(true)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .into(imageView);
+
+    holder.getImageView().setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        float scale = LayoutUtil.pxFromDp(context,
+            EXPAND_IMAGE_DEFAULT_WIDTH) / searchImageResult.getContent().getWidth();
+        float width = scale * searchImageResult.getContent().getWidth();
+        float height = scale * searchImageResult.getContent().getHeight();
+        expandedImageView.setVisibility(View.VISIBLE);
+        expandedImageView.getLayoutParams().width = (int) width;
+        expandedImageView.getLayoutParams().height = (int) height;
+
+        Glide.with(context)
+            .load(searchImageResult.getContent().getUrl())
+            .thumbnail(Glide.with(context).load(R.raw.flickr200))
+            .crossFade()
+            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(expandedImageView);
+      }
+    });
+  }
+
+  @Override
+  public void onViewDetachedFromWindow(SearchImageViewHolder holder) {
+    super.onViewDetachedFromWindow(holder);
+    holder.getImageView().setOnClickListener(null);
   }
 
   @Override
