@@ -1,4 +1,4 @@
-package com.rawr.simple.seach.image;
+package com.rawr.simple.search.image;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

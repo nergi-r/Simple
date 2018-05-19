@@ -1,4 +1,4 @@
-package com.rawr.simple.seach.image;
+package com.rawr.simple.search.image;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +19,7 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
   private static final float SEARCH_IMAGE_DEFAULT_WIDTH = 135;
 
   private final Context context;
-  private List<SearchImage> searchImageResults;
+  private List<SearchImageResult> searchImageResults;
 
   public SearchImageResultAdapter(Context context) {
     this.context = context;
@@ -38,17 +38,17 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
 
   @Override
   public void onBindViewHolder(SearchImageViewHolder holder, int position) {
-    final SearchImage searchImage = searchImageResults.get(position);
+    final SearchImageResult searchImageResult = searchImageResults.get(position);
     final ImageView imageView = holder.getImageView();
 
-    float scale = LayoutUtil.pxFromDp(context, SEARCH_IMAGE_DEFAULT_WIDTH) / searchImage.getWidth();
-    float width = scale * searchImage.getWidth();
-    float height = scale * searchImage.getHeight();
+    float scale = LayoutUtil.pxFromDp(context, SEARCH_IMAGE_DEFAULT_WIDTH) / searchImageResult.getWidth();
+    float width = scale * searchImageResult.getWidth();
+    float height = scale * searchImageResult.getHeight();
     imageView.getLayoutParams().width = (int) width;
     imageView.getLayoutParams().height = (int) height;
 
     Glide.with(context)
-        .load(searchImage.getUrl())
+        .load(searchImageResult.getUrl())
         .thumbnail(Glide.with(context).load(R.raw.spin))
         .crossFade()
         .skipMemoryCache(true)
@@ -61,18 +61,18 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
     return searchImageResults.size();
   }
 
-  public List<SearchImage> getSearchImageResults() {
+  public List<SearchImageResult> getSearchImageResults() {
     return searchImageResults;
   }
 
-  public void setSearchImageResults(List<SearchImage> searchImageResults) {
+  public void setSearchImageResults(List<SearchImageResult> searchImageResults) {
     reset();
     this.searchImageResults = searchImageResults;
     notifyDataSetChanged();
   }
 
-  public void addSearchImageResults(SearchImage searchImage) {
-    this.searchImageResults.add(searchImage);
+  public void addSearchImageResults(SearchImageResult searchImageResult) {
+    this.searchImageResults.add(searchImageResult);
     notifyItemInserted(searchImageResults.size());
   }
 

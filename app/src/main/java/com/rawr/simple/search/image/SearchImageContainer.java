@@ -1,4 +1,4 @@
-package com.rawr.simple.seach.image;
+package com.rawr.simple.search.image;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -37,11 +37,11 @@ public class SearchImageContainer {
     recyclerView.setAdapter(adapter);
   }
 
-  public void addSearchImageResults(SearchImage searchImage) {
-    adapter.addSearchImageResults(searchImage);
+  public void addSearchImageResults(SearchImageResult searchImageResult) {
+    adapter.addSearchImageResults(searchImageResult);
   }
 
-  public void setSearchImageResults(List<SearchImage> searchImageResults) {
+  public void setSearchImageResults(List<SearchImageResult> searchImageResults) {
     adapter.setSearchImageResults(searchImageResults);
   }
 

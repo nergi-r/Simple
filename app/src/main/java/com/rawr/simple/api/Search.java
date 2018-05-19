@@ -38,8 +38,8 @@ public class Search {
 
   public Search build() {
     Uri.Builder uriBuilder = new Uri.Builder()
-        .scheme("https")
-        .encodedAuthority("simple-backend-api.herokuapp.com")
+        .scheme("http")
+        .encodedAuthority("simple-backend.eu-4.evennode.com")
         .appendPath("api")
         .appendPath("search")
         .appendPath("image")

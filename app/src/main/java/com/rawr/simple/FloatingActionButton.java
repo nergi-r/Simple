@@ -8,9 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,9 +18,9 @@ import com.rawr.simple.api.Search;
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
 import com.rawr.simple.layout.EndlessRecyclerViewScrollListener;
 import com.rawr.simple.layout.LayoutUtil;
-import com.rawr.simple.seach.image.SearchImage;
-import com.rawr.simple.seach.image.SearchImageContainer;
-import com.rawr.simple.seach.suggestion.SearchSuggestion;
+import com.rawr.simple.search.image.SearchImageResult;
+import com.rawr.simple.search.image.SearchImageContainer;
+import com.rawr.simple.search.suggestion.SearchSuggestion;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -185,7 +183,7 @@ public class FloatingActionButton {
           toggleSearch(false);
 
           JSONArray results = jsonObject.getJSONArray("data");
-          List<SearchImage> searchImageResults = new ArrayList<>();
+          List<SearchImageResult> searchImageResults = new ArrayList<>();
 
           for (int index = 0; index < results.length(); index++) {
             JSONObject item = results.getJSONObject(index);
@@ -193,14 +191,16 @@ public class FloatingActionButton {
             final int height = item.getInt("height");
             final int width = item.getInt("width");
 
-            searchImageResults.add(new SearchImage(thumbnailLink, width, height));
+            searchImageResults.add(new SearchImageResult(thumbnailLink, width, height));
           }
 
           searchUtil.nextPage(results.length());
 
           TransitionManager.beginDelayedTransition(rootView);
           searchImageContainer.setSearchImageResults(searchImageResults);
-          rootView.addView(searchImageContainer.getRecyclerView(), 0, searchImageContainerParams);
+          rootView.addView(searchImageContainer.getRecyclerView(),
+              0,
+              searchImageContainerParams);
         } catch (Exception e) {
           Log.i("Search Image", "Failed to parse JSON");
         }
@@ -227,7 +227,7 @@ public class FloatingActionButton {
             final int width = item.getInt("width");
 
             searchImageContainer.addSearchImageResults(
-                new SearchImage(thumbnailLink, width, height));
+                new SearchImageResult(thumbnailLink, width, height));
           }
 
           searchUtil.nextPage(results.length());

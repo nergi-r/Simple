@@ -1,11 +1,11 @@
-package com.rawr.simple.seach.image;
+package com.rawr.simple.search.image;
 
-public class SearchImage {
+public class SearchImageResult {
   private String url;
   private int width;
   private int height;
 
-  public SearchImage(String url, int width, int height) {
+  public SearchImageResult(String url, int width, int height) {
     this.url = url;
     this.width = width;
     this.height = height;

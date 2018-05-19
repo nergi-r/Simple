@@ -1,4 +1,4 @@
-package com.rawr.simple.seach.suggestion;
+package com.rawr.simple.search.suggestion;
 
 import android.content.Context;
 import android.os.Handler;
