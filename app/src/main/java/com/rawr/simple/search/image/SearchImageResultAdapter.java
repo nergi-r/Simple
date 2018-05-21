@@ -1,16 +1,26 @@
 package com.rawr.simple.search.image;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.rawr.simple.BackgroundService;
+import com.rawr.simple.MainActivity;
 import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.R;
+import com.rawr.simple.layout.TouchImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +30,10 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
   private static final float EXPAND_IMAGE_DEFAULT_WIDTH = 600;
 
   private final Context context;
-  private final ImageView expandedImageView;
   private List<SearchImageResult> searchImageResults;
 
-  public SearchImageResultAdapter(Context context, ImageView expandedImageView) {
+  public SearchImageResultAdapter(Context context) {
     this.context = context;
-    this.expandedImageView = expandedImageView;
     searchImageResults = new ArrayList<>();
   }
 
@@ -53,7 +61,7 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
 
     Glide.with(context)
         .load(searchImageResult.getThumbnail().getUrl())
-        .thumbnail(Glide.with(context).load(R.raw.flickr64))
+        .thumbnail(Glide.with(context).load(R.raw.spin))
         .crossFade()
         .skipMemoryCache(true)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -62,21 +70,44 @@ public class SearchImageResultAdapter extends RecyclerView.Adapter<SearchImageVi
     holder.getImageView().setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        float scale = LayoutUtil.pxFromDp(context,
-            EXPAND_IMAGE_DEFAULT_WIDTH) / searchImageResult.getContent().getWidth();
-        float width = scale * searchImageResult.getContent().getWidth();
-        float height = scale * searchImageResult.getContent().getHeight();
-        expandedImageView.setVisibility(View.VISIBLE);
-        expandedImageView.getLayoutParams().width = (int) width;
-        expandedImageView.getLayoutParams().height = (int) height;
+        final Dialog dialog = BackgroundService.getDialog();
+        final TouchImageView expandedImageView = dialog.findViewById(R.id.expandedImageView2);
+
+        Glide.with(context)
+            .load(R.raw.loader256)
+            .asGif()
+            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(new SimpleTarget<GifDrawable>() {
+              @Override
+              public void onResourceReady(
+                  GifDrawable resource, GlideAnimation<? super GifDrawable> glideAnimation) {
+                resource.start();
+                expandedImageView.setImageDrawable(resource);
+                expandedImageView.setZoom(1f);
+              }
+            });
 
         Glide.with(context)
             .load(searchImageResult.getContent().getUrl())
-            .thumbnail(Glide.with(context).load(R.raw.flickr200))
+            .asBitmap()
             .crossFade()
             .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(expandedImageView);
+            .into(new SimpleTarget<Bitmap>() {
+              @Override
+              public void onResourceReady(
+                  Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                expandedImageView.setImageBitmap(resource);
+              }
+            });
+        dialog.show();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+          @Override
+          public void onCancel(DialogInterface dialogInterface) {
+            expandedImageView.setImageDrawable(null);
+          }
+        });
       }
     });
   }

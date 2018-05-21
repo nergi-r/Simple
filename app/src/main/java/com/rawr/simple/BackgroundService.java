@@ -1,5 +1,6 @@
 package com.rawr.simple;
 
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -8,6 +9,7 @@ import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ public class BackgroundService extends Service
   private WindowManager windowManager;
   private WindowManager.LayoutParams params;
   private boolean isFocused;
+  private static Dialog dialog;
 
   public BackgroundService() {
 
@@ -36,6 +39,7 @@ public class BackgroundService extends Service
   public void onCreate() {
     super.onCreate();
 
+    this.initDialog();
     floatingActionButton = new FloatingActionButton(this);
     rootView = floatingActionButton.getRootView();
     rootView.setBackButtonListener(this);
@@ -130,24 +134,6 @@ public class BackgroundService extends Service
   @Override
   public void onBackButtonPressed() {
     if (isFocused) {
-      final ImageView expandedImageView = floatingActionButton.getExpandedImageView();
-      if (expandedImageView.getVisibility() == View.VISIBLE) {
-        expandedImageView.animate().alpha(0).setDuration(250)
-            .setInterpolator(new DecelerateInterpolator())
-            .withEndAction(new Runnable() {
-              @Override
-              public void run() {
-                expandedImageView.getLayoutParams().width = 0;
-                expandedImageView.getLayoutParams().height = 0;
-                expandedImageView.setVisibility(View.INVISIBLE);
-                // since animate does not have imageAlpha,
-                // need to revert back alpha using the deprecated setAlpha function
-                expandedImageView.setAlpha((float)1.0);
-                expandedImageView.setImageDrawable(null);
-              }
-            });
-        return;
-      }
       isFocused = false;
       params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
       floatingActionButton.toggleView(false);
@@ -159,5 +145,20 @@ public class BackgroundService extends Service
   public void onDestroy() {
     super.onDestroy();
     if (rootView != null) windowManager.removeView(rootView);
+  }
+
+  private void initDialog() {
+
+    dialog = new Dialog(getApplicationContext(),
+        android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    dialog.setContentView(R.layout.layout_expand_image);
+    dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    dialog.getWindow().setDimAmount(0.7f);
+  }
+
+  public static Dialog getDialog() {
+    return dialog;
   }
 }

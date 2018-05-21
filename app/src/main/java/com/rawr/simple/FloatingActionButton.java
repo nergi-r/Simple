@@ -41,7 +41,6 @@ public class FloatingActionButton {
   private final ImageView iconView;
   private final AutoCompleteTextView searchView;
   private final ImageView searchBtn;
-  private final ImageView expandedImageView;
 
   private final SearchImageContainer searchImageContainer;
   private final RelativeLayout.LayoutParams searchImageContainerParams;
@@ -57,15 +56,13 @@ public class FloatingActionButton {
     iconView = rootView.findViewById(R.id.imageView);
     searchView = rootView.findViewById(R.id.autoCompleteTextView);
     searchBtn = rootView.findViewById(R.id.searchButton);
-    expandedImageView = rootView.findViewById(R.id.expandedImageView);
 
     searchView.setVisibility(View.INVISIBLE);
     searchBtn.setVisibility(View.INVISIBLE);
-    expandedImageView.setVisibility(View.INVISIBLE);
     searchUtil = new Search(context);
     searchSuggestion = new SearchSuggestion(context, searchView);
 
-    searchImageContainer = new SearchImageContainer(context, expandedImageView);
+    searchImageContainer = new SearchImageContainer(context);
     searchImageContainerParams = new RelativeLayout.LayoutParams(
         (int) LayoutUtil.pxFromDp(context, SEARCH_IMAGE_CONTAINER_SIZE),
         (int) LayoutUtil.pxFromDp(context, SEARCH_IMAGE_CONTAINER_SIZE));
@@ -103,10 +100,6 @@ public class FloatingActionButton {
 
   public ImageView getIconView() {
     return iconView;
-  }
-
-  public ImageView getExpandedImageView() {
-    return expandedImageView;
   }
 
   public void toggleView(boolean toggled) {
@@ -170,11 +163,6 @@ public class FloatingActionButton {
         }
       };
       searchImageContainer.getRecyclerView().addOnScrollListener(scrollListener);
-
-      expandedImageView.setVisibility(View.INVISIBLE);
-      expandedImageView.getLayoutParams().width = 0;
-      expandedImageView.getLayoutParams().height = 0;
-      expandedImageView.setImageDrawable(null);
     }
   }
 
