@@ -1,14 +1,17 @@
 package com.rawr.simple;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.os.IBinder;
 import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
@@ -24,6 +27,7 @@ public class BackgroundService extends Service
   private WindowManager windowManager;
   private WindowManager.LayoutParams params;
   private boolean isFocused;
+  private boolean isLongPressed;
   private static Dialog dialog;
 
   public BackgroundService() {
@@ -35,6 +39,7 @@ public class BackgroundService extends Service
     return null;
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   @Override
   public void onCreate() {
     super.onCreate();
@@ -62,7 +67,7 @@ public class BackgroundService extends Service
     if (windowManager != null) {
       windowManager.addView(rootView, params);
     }
-//    final Handler handler = new Handler();
+    final Handler handler = new Handler();
 
     icon.setOnTouchListener(new View.OnTouchListener() {
       private int lastAction;
@@ -71,11 +76,25 @@ public class BackgroundService extends Service
       private float initialTouchX;
       private float initialTouchY;
 
-//      final Runnable longPressed = new Runnable() {
-//        public void run() {
-//          lastAction = -1;
-//        }
-//      };
+      final Runnable longPressed = new Runnable() {
+        public void run() {
+          if (lastAction == MotionEvent.ACTION_UP || isLongPressed || isFocused) return;
+          isLongPressed = true;
+          isFocused = !isFocused;
+
+          if (isFocused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+          else params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+
+          floatingActionButton.getSearchView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              stopSelf();
+            }
+          });
+          floatingActionButton.showCloseOption(true);
+          windowManager.updateViewLayout(rootView, params);
+        }
+      };
 
       @Override
       public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -87,13 +106,15 @@ public class BackgroundService extends Service
             initialTouchX = motionEvent.getRawX();
             initialTouchY = motionEvent.getRawY();
 
-//            handler.postDelayed(longPressed, ViewConfiguration.getLongPressTimeout());
+            if (!isFocused) {
+              handler.postDelayed(longPressed, ViewConfiguration.getLongPressTimeout());
+            }
 
             lastAction = motionEvent.getAction();
             return true;
 
           case MotionEvent.ACTION_UP:
-            if (lastAction == MotionEvent.ACTION_DOWN) {
+            if (!isLongPressed && lastAction == MotionEvent.ACTION_DOWN) {
               isFocused = !isFocused;
 
               if (isFocused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -103,7 +124,8 @@ public class BackgroundService extends Service
               windowManager.updateViewLayout(rootView, params);
             }
 
-//            handler.removeCallbacks(longPressed);
+            handler.removeCallbacks(longPressed);
+            isLongPressed = false;
 
             lastAction = motionEvent.getAction();
             return true;
@@ -118,7 +140,7 @@ public class BackgroundService extends Service
               params.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
 
               windowManager.updateViewLayout(rootView, params);
-//              handler.removeCallbacks(longPressed);
+              handler.removeCallbacks(longPressed);
 
               lastAction = motionEvent.getAction();
             }
@@ -141,14 +163,7 @@ public class BackgroundService extends Service
     }
   }
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    if (rootView != null) windowManager.removeView(rootView);
-  }
-
   private void initDialog() {
-
     dialog = new Dialog(getApplicationContext(),
         android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
     dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
@@ -160,5 +175,11 @@ public class BackgroundService extends Service
 
   public static Dialog getDialog() {
     return dialog;
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    if (rootView != null) windowManager.removeView(rootView);
   }
 }

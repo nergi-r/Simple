@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,9 +57,9 @@ public class FloatingActionButton {
     iconView = rootView.findViewById(R.id.imageView);
     searchView = rootView.findViewById(R.id.autoCompleteTextView);
     searchBtn = rootView.findViewById(R.id.searchButton);
-
     searchView.setVisibility(View.INVISIBLE);
     searchBtn.setVisibility(View.INVISIBLE);
+
     searchUtil = new Search(context);
     searchSuggestion = new SearchSuggestion(context, searchView);
 
@@ -102,10 +103,32 @@ public class FloatingActionButton {
     return iconView;
   }
 
+  public AutoCompleteTextView getSearchView() {
+    return searchView;
+  }
+
   public void toggleView(boolean toggled) {
+    showCloseOption(false);
     toggleSearch(toggled);
     toggleSearchView(toggled);
     toggleIcon(toggled);
+  }
+
+  public void showCloseOption(boolean show) {
+    if (show) {
+      searchView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+      toggleIcon(show);
+      searchView.setText("Exit");
+      searchView.setVisibility(View.VISIBLE);
+      searchView.setFocusable(false);
+      TransitionManager.beginDelayedTransition(rootView);
+      searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
+    } else {
+      searchView.setFocusable(true);
+      searchView.setGravity(Gravity.NO_GRAVITY);
+      searchView.setOnClickListener(null);
+      searchView.setText("");
+    }
   }
 
   private void toggleIcon(boolean toggled) {
@@ -121,13 +144,10 @@ public class FloatingActionButton {
 
   private void toggleSearch(boolean toggled) {
     if (toggled) {
-      searchView.setEnabled(true);
-
       RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
           (int) LayoutUtil.pxFromDp(context, 25),
           (int) LayoutUtil.pxFromDp(context, 25));
       params.rightMargin = params.topMargin = (int) LayoutUtil.pxFromDp(context, 5);
-
       params.addRule(RelativeLayout.ALIGN_END, R.id.autoCompleteTextView);
       params.addRule(RelativeLayout.ALIGN_TOP, R.id.autoCompleteTextView);
       searchBtn.setLayoutParams(params);
@@ -137,6 +157,8 @@ public class FloatingActionButton {
           .skipMemoryCache(true)
           .diskCacheStrategy(DiskCacheStrategy.NONE)
           .into(searchBtn);
+
+      searchView.setFocusable(true);
       searchView.setVisibility(View.VISIBLE);
       TransitionManager.beginDelayedTransition(rootView);
       searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
@@ -167,7 +189,7 @@ public class FloatingActionButton {
   }
 
   private void searchImage(String query) {
-    searchView.setEnabled(false);
+    searchView.setFocusable(false);
     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
         (int) LayoutUtil.pxFromDp(context, 40),
         (int) LayoutUtil.pxFromDp(context, 40));
