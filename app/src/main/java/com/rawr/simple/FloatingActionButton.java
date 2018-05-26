@@ -125,6 +125,7 @@ public class FloatingActionButton {
       searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
     } else {
       searchView.setFocusable(true);
+      searchView.setFocusableInTouchMode(true);
       searchView.setGravity(Gravity.NO_GRAVITY);
       searchView.setOnClickListener(null);
       searchView.setText("");
@@ -158,7 +159,7 @@ public class FloatingActionButton {
           .diskCacheStrategy(DiskCacheStrategy.NONE)
           .into(searchBtn);
 
-      searchView.setFocusable(true);
+      searchView.setEnabled(true);
       searchView.setVisibility(View.VISIBLE);
       TransitionManager.beginDelayedTransition(rootView);
       searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
@@ -189,7 +190,7 @@ public class FloatingActionButton {
   }
 
   private void searchImage(String query) {
-    searchView.setFocusable(false);
+    searchView.setEnabled(false);
     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
         (int) LayoutUtil.pxFromDp(context, 40),
         (int) LayoutUtil.pxFromDp(context, 40));

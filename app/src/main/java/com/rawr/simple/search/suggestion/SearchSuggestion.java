@@ -39,7 +39,9 @@ public class SearchSuggestion {
     final Runnable inputFinishChecker = new Runnable() {
       @Override
       public void run() {
-        if (System.currentTimeMillis() > lastSearchTime + delay && searchView.isFocusable()) {
+        if (System.currentTimeMillis() > lastSearchTime + delay
+            && searchView.isFocusable()
+            && searchView.isEnabled()) {
           final String query = searchView.getText().toString();
           lastSearchTime = System.currentTimeMillis();
           new Suggestion(context, query).build().execute(new JSONRequestCallback() {
