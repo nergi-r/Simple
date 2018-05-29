@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.rawr.simple.api.Search;
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
 import com.rawr.simple.layout.EndlessRecyclerViewScrollListener;
 import com.rawr.simple.layout.LayoutUtil;
+import com.rawr.simple.layout.SearchBox;
 import com.rawr.simple.search.image.SearchImageResult;
 import com.rawr.simple.search.image.SearchImageContainer;
 import com.rawr.simple.search.image.SearchImageResultAttributes;
@@ -33,14 +33,13 @@ import java.util.List;
 public class FloatingActionButton {
   private static final float ICON_VIEW_SIZE = 50;
   private static final float ICON_VIEW_TOGGLED_SIZE = 60;
-  private static final float SEARCH_VIEW_SIZE = 280;
   private static final float SEARCH_IMAGE_CONTAINER_SIZE = 400;
   private static final float SEARCH_IMAGE_CONTAINER_MARGIN = 30;
 
   private final Context context;
   private final BackButtonAwareRelativeLayout rootView;
   private final ImageView iconView;
-  private final AutoCompleteTextView searchView;
+  private final SearchBox searchBox;
   private final ImageView searchBtn;
 
   private final SearchImageContainer searchImageContainer;
@@ -55,13 +54,13 @@ public class FloatingActionButton {
     this.context = context;
     rootView = (BackButtonAwareRelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_fab, null);
     iconView = rootView.findViewById(R.id.imageView);
-    searchView = rootView.findViewById(R.id.autoCompleteTextView);
     searchBtn = rootView.findViewById(R.id.searchButton);
-    searchView.setVisibility(View.INVISIBLE);
     searchBtn.setVisibility(View.INVISIBLE);
+    searchBox = rootView.findViewById(R.id.autoCompleteTextView);
+    searchBox.init(context, rootView);
 
     searchUtil = new Search(context);
-    searchSuggestion = new SearchSuggestion(context, searchView);
+    searchSuggestion = new SearchSuggestion(context, searchBox);
 
     searchImageContainer = new SearchImageContainer(context);
     searchImageContainerParams = new RelativeLayout.LayoutParams(
@@ -72,12 +71,12 @@ public class FloatingActionButton {
     searchImageContainerParams.topMargin = (int) LayoutUtil.pxFromDp(
         context, SEARCH_IMAGE_CONTAINER_MARGIN);
 
-    searchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView textView, int keyCode, KeyEvent keyEvent) {
         // Done button or Enter
         if (keyCode == 0 || keyCode == 6) {
-          String query = searchView.getText().toString();
+          String query = searchBox.getText().toString();
           if (query.length() == 0) return false;
           Log.i("Query", query);
           searchImage(query);
@@ -103,8 +102,8 @@ public class FloatingActionButton {
     return iconView;
   }
 
-  public AutoCompleteTextView getSearchView() {
-    return searchView;
+  public SearchBox getSearchBox() {
+    return searchBox;
   }
 
   public void toggleView(boolean toggled) {
@@ -115,21 +114,8 @@ public class FloatingActionButton {
   }
 
   public void showCloseOption(boolean show) {
-    if (show) {
-      searchView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-      toggleIcon(show);
-      searchView.setText("Exit");
-      searchView.setVisibility(View.VISIBLE);
-      searchView.setFocusable(false);
-      TransitionManager.beginDelayedTransition(rootView);
-      searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
-    } else {
-      searchView.setFocusable(true);
-      searchView.setFocusableInTouchMode(true);
-      searchView.setGravity(Gravity.NO_GRAVITY);
-      searchView.setOnClickListener(null);
-      searchView.setText("");
-    }
+    if (show) toggleIcon(show);
+    searchBox.showCloseOption(show);
   }
 
   private void toggleIcon(boolean toggled) {
@@ -158,18 +144,9 @@ public class FloatingActionButton {
           .skipMemoryCache(true)
           .diskCacheStrategy(DiskCacheStrategy.NONE)
           .into(searchBtn);
-
-      searchView.setEnabled(true);
-      searchView.setVisibility(View.VISIBLE);
-      TransitionManager.beginDelayedTransition(rootView);
-      searchView.setWidth((int) LayoutUtil.pxFromDp(context, SEARCH_VIEW_SIZE));
-      searchBtn.setVisibility(View.VISIBLE);
-    } else {
-      searchBtn.setVisibility(View.INVISIBLE);
-      searchView.setVisibility(View.INVISIBLE);
-      searchView.setWidth(0);
     }
-    searchView.setText("");
+    searchBox.toggle(toggled);
+    searchBtn.setVisibility(toggled ? View.VISIBLE : View.INVISIBLE);
     searchSuggestion.resetSuggestion();
   }
 
@@ -190,7 +167,7 @@ public class FloatingActionButton {
   }
 
   private void searchImage(String query) {
-    searchView.setEnabled(false);
+    searchBox.setEnabled(false);
     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
         (int) LayoutUtil.pxFromDp(context, 40),
         (int) LayoutUtil.pxFromDp(context, 40));

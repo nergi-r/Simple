@@ -7,14 +7,12 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
-import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
@@ -85,7 +83,7 @@ public class BackgroundService extends Service
           if (isFocused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
           else params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
-          floatingActionButton.getSearchView().setOnClickListener(new View.OnClickListener() {
+          floatingActionButton.getSearchBox().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
               stopSelf();

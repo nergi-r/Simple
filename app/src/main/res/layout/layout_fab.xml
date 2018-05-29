@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/fabView">
 
-    <AutoCompleteTextView
+    <com.rawr.simple.layout.SearchBox
         android:id="@+id/autoCompleteTextView"
         android:inputType="text"
         android:maxLines="1"
