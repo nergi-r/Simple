@@ -5,28 +5,31 @@ import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.os.Handler;
+import android.graphics.Rect;
 import android.os.IBinder;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
+import com.rawr.simple.layout.CloseArea;
+import com.rawr.simple.layout.LayoutUtil;
 
 public class BackgroundService extends Service
     implements BackButtonAwareRelativeLayout.BackButtonListener {
 
+  private static Dialog dialog;
   private FloatingActionButton floatingActionButton;
   private BackButtonAwareRelativeLayout rootView;
   private WindowManager windowManager;
   private WindowManager.LayoutParams params;
+  private WindowManager.LayoutParams closeAreaParams;
+  private View closeAreaView;
   private boolean isFocused;
-  private boolean isLongPressed;
-  private static Dialog dialog;
 
   public BackgroundService() {
 
@@ -46,8 +49,10 @@ public class BackgroundService extends Service
     floatingActionButton = new FloatingActionButton(this);
     rootView = floatingActionButton.getRootView();
     rootView.setBackButtonListener(this);
-
     final ImageView icon = floatingActionButton.getIconView();
+    closeAreaView = LayoutInflater.from(this).inflate(R.layout.layout_close_area, null);
+    final CloseArea closeArea = closeAreaView.findViewById(R.id.closeArea);
+    closeArea.init(this);
 
     params = new WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT,
@@ -61,11 +66,19 @@ public class BackgroundService extends Service
     params.x = 0;
     params.y = 100;
 
+    closeAreaParams = new WindowManager.LayoutParams(
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        WindowManager.LayoutParams.TYPE_PHONE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        PixelFormat.TRANSLUCENT);
+    closeAreaParams.gravity = Gravity.BOTTOM | Gravity.CENTER;
+
     windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
     if (windowManager != null) {
+      windowManager.addView(closeAreaView, closeAreaParams);
       windowManager.addView(rootView, params);
     }
-    final Handler handler = new Handler();
 
     icon.setOnTouchListener(new View.OnTouchListener() {
       private int lastAction;
@@ -73,26 +86,6 @@ public class BackgroundService extends Service
       private int initialY;
       private float initialTouchX;
       private float initialTouchY;
-
-      final Runnable longPressed = new Runnable() {
-        public void run() {
-          if (lastAction == MotionEvent.ACTION_UP || isLongPressed || isFocused) return;
-          isLongPressed = true;
-          isFocused = !isFocused;
-
-          if (isFocused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-          else params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-
-          floatingActionButton.getSearchBox().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              stopSelf();
-            }
-          });
-          floatingActionButton.showCloseOption(true);
-          windowManager.updateViewLayout(rootView, params);
-        }
-      };
 
       @Override
       public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -103,16 +96,11 @@ public class BackgroundService extends Service
             initialY = params.y;
             initialTouchX = motionEvent.getRawX();
             initialTouchY = motionEvent.getRawY();
-
-            if (!isFocused) {
-              handler.postDelayed(longPressed, ViewConfiguration.getLongPressTimeout());
-            }
-
             lastAction = motionEvent.getAction();
             return true;
 
           case MotionEvent.ACTION_UP:
-            if (!isLongPressed && lastAction == MotionEvent.ACTION_DOWN) {
+            if (lastAction == MotionEvent.ACTION_DOWN) {
               isFocused = !isFocused;
 
               if (isFocused) params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -121,10 +109,10 @@ public class BackgroundService extends Service
               floatingActionButton.toggleView(isFocused);
               windowManager.updateViewLayout(rootView, params);
             }
-
-            handler.removeCallbacks(longPressed);
-            isLongPressed = false;
-
+            if(lastAction == MotionEvent.ACTION_MOVE) {
+              closeArea.setVisibility(View.INVISIBLE);
+              if(closeArea.isCollideWith(icon)) stopSelf();
+            }
             lastAction = motionEvent.getAction();
             return true;
 
@@ -136,13 +124,12 @@ public class BackgroundService extends Service
             if (displacementX >= 1 || displacementY >= 1) {
               params.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
               params.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
+              closeArea.setVisibility(View.VISIBLE);
+              closeArea.isCollideWith(icon);
 
               windowManager.updateViewLayout(rootView, params);
-              handler.removeCallbacks(longPressed);
-
               lastAction = motionEvent.getAction();
             }
-
             return true;
         }
 
@@ -178,6 +165,9 @@ public class BackgroundService extends Service
   @Override
   public void onDestroy() {
     super.onDestroy();
-    if (rootView != null) windowManager.removeView(rootView);
+    if (rootView != null) {
+      windowManager.removeView(rootView);
+      windowManager.removeViewImmediate(closeAreaView);
+    }
   }
 }

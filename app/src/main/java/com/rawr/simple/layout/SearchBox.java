@@ -33,23 +33,6 @@ public class SearchBox extends AutoCompleteTextView {
     this.setVisibility(INVISIBLE);
   }
 
-  public void showCloseOption(boolean show) {
-    if (show) {
-      this.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-      this.setText("Exit");
-      this.setVisibility(View.VISIBLE);
-      this.setFocusable(false);
-      TransitionManager.beginDelayedTransition(rootView);
-      this.setWidth((int) LayoutUtil.pxFromDp(context, WIDTH));
-    } else {
-      this.setFocusable(true);
-      this.setFocusableInTouchMode(true);
-      this.setGravity(Gravity.NO_GRAVITY);
-      this.setOnClickListener(null);
-      this.setText("");
-    }
-  }
-
   public void toggle(boolean toggled) {
     if (toggled) {
       this.setEnabled(true);

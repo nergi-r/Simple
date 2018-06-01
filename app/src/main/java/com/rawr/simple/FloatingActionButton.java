@@ -108,15 +108,9 @@ public class FloatingActionButton {
   }
 
   public void toggleView(boolean toggled) {
-    showCloseOption(false);
     toggleSearch(toggled);
     toggleSearchView(toggled);
     toggleIcon(toggled);
-  }
-
-  public void showCloseOption(boolean show) {
-    if (show) toggleIcon(true);
-    searchBox.showCloseOption(show);
   }
 
   private void toggleIcon(boolean toggled) {
