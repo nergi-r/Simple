@@ -11,14 +11,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rawr.simple.api.Search;
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
 import com.rawr.simple.layout.EndlessRecyclerViewScrollListener;
 import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.layout.SearchBox;
 import com.rawr.simple.layout.SearchModeButton;
+import com.rawr.simple.layout.SearchOptionsView;
 import com.rawr.simple.search.image.SearchImageResult;
 import com.rawr.simple.search.image.SearchImageContainer;
 import com.rawr.simple.search.image.SearchImageResultAttributes;
@@ -41,6 +40,8 @@ public class FloatingActionButton {
   private final ImageView iconView;
   private final SearchBox searchBox;
   private final SearchModeButton searchBtn;
+  private final ImageView searchOptionButton;
+  private final SearchOptionsView searchOptionsView;
 
   private final SearchImageContainer searchImageContainer;
   private final RelativeLayout.LayoutParams searchImageContainerParams;
@@ -59,6 +60,16 @@ public class FloatingActionButton {
     searchBtn.init(context);
     searchBox = rootView.findViewById(R.id.autoCompleteTextView);
     searchBox.init(context, rootView);
+    searchOptionsView = rootView.findViewById(R.id.searchOptionsView);
+    searchOptionsView.init(context);
+    searchOptionButton = rootView.findViewById(R.id.searchOptionButton);
+    searchOptionButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        System.out.println("Clicked");
+        searchOptionsView.toggle();
+      }
+    });
 
     searchUtil = new Search(context);
     searchSuggestion = new SearchSuggestion(context, searchBox);
@@ -103,10 +114,6 @@ public class FloatingActionButton {
     return iconView;
   }
 
-  public SearchBox getSearchBox() {
-    return searchBox;
-  }
-
   public void toggleView(boolean toggled) {
     toggleSearch(toggled);
     toggleSearchView(toggled);
@@ -128,6 +135,7 @@ public class FloatingActionButton {
     if (toggled) searchBtn.setToImageSearch();
     searchBox.toggle(toggled);
     searchBtn.setVisibility(toggled ? View.VISIBLE : View.INVISIBLE);
+    searchOptionButton.setVisibility(toggled ? View.VISIBLE : View.INVISIBLE);
     searchSuggestion.resetSuggestion();
   }
 

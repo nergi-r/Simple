@@ -64,7 +64,7 @@ public class BackgroundService extends Service
     params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
     params.gravity = Gravity.TOP | Gravity.START;
     params.x = 0;
-    params.y = 100;
+    params.y = 200;
 
     closeAreaParams = new WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT,
@@ -109,9 +109,9 @@ public class BackgroundService extends Service
               floatingActionButton.toggleView(isFocused);
               windowManager.updateViewLayout(rootView, params);
             }
-            if(lastAction == MotionEvent.ACTION_MOVE) {
+            if (lastAction == MotionEvent.ACTION_MOVE) {
               closeArea.setVisibility(View.INVISIBLE);
-              if(closeArea.isCollideWith(icon)) stopSelf();
+              if (closeArea.isCollideWith(icon)) stopSelf();
             }
             lastAction = motionEvent.getAction();
             return true;

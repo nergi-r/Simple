@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
@@ -29,17 +30,14 @@ public class SearchModeButton extends ImageView {
 
   public void init(Context context) {
     this.context = context;
-    this.setVisibility(INVISIBLE);
   }
 
   public void setToLoading() {
-    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
         (int) LayoutUtil.pxFromDp(context, 40),
         (int) LayoutUtil.pxFromDp(context, 40));
     params.rightMargin = 0;
-    params.topMargin = (int) LayoutUtil.pxFromDp(context, -2);
-    params.addRule(RelativeLayout.ALIGN_END, R.id.autoCompleteTextView);
-    params.addRule(RelativeLayout.ALIGN_TOP, R.id.autoCompleteTextView);
+    params.topMargin = (int) LayoutUtil.pxFromDp(context, -5);
     this.setLayoutParams(params);
     Glide.with(context)
         .load(R.raw.spin)
@@ -50,12 +48,11 @@ public class SearchModeButton extends ImageView {
   }
 
   public void setToImageSearch() {
-    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
         (int) LayoutUtil.pxFromDp(context, 25),
         (int) LayoutUtil.pxFromDp(context, 25));
-    params.rightMargin = params.topMargin = (int) LayoutUtil.pxFromDp(context, 5);
-    params.addRule(RelativeLayout.ALIGN_END, R.id.autoCompleteTextView);
-    params.addRule(RelativeLayout.ALIGN_TOP, R.id.autoCompleteTextView);
+    params.rightMargin = (int) LayoutUtil.pxFromDp(context, 3);
+    params.topMargin = (int) LayoutUtil.pxFromDp(context, 3);
     this.setLayoutParams(params);
 
     Glide.with(context)

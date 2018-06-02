@@ -2,34 +2,59 @@
 <com.rawr.simple.layout.BackButtonAwareRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fabView"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/fabView">
+    android:layout_height="wrap_content">
+
+    <com.rawr.simple.layout.SearchOptionsView
+        android:id="@+id/searchOptionsView"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_alignEnd="@id/autoCompleteTextView"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/rounded_corner"
+        android:visibility="invisible">
+
+    </com.rawr.simple.layout.SearchOptionsView>
 
     <com.rawr.simple.layout.SearchBox
         android:id="@+id/autoCompleteTextView"
-        android:inputType="text"
-        android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
         android:layout_alignParentTop="true"
-        android:paddingTop="3dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_corner"
+        android:inputType="text"
+        android:maxLines="1"
         android:paddingBottom="3dp"
         android:paddingLeft="30dp"
         android:paddingRight="35dp"
-        android:background="@drawable/rounded_corner"
-        android:textColor="#000"/>
+        android:paddingTop="3dp"
+        android:textColor="#000"
+        android:visibility="invisible"/>
 
-    <com.rawr.simple.layout.SearchModeButton
-        android:id="@+id/searchButton"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignEnd="@id/autoCompleteTextView"
-        android:layout_alignTop="@id/autoCompleteTextView"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_alignTop="@id/autoCompleteTextView">
+
+        <com.rawr.simple.layout.SearchModeButton
+            android:id="@+id/searchButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"/>
+
+        <ImageView
+            android:id="@+id/searchOptionButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/menu"
+            android:visibility="invisible"/>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView"
