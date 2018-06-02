@@ -8,13 +8,29 @@
 
     <com.rawr.simple.layout.SearchOptionsView
         android:id="@+id/searchOptionsView"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignEnd="@id/autoCompleteTextView"
         android:layout_marginTop="60dp"
-        android:background="@drawable/rounded_corner"
+        android:orientation="horizontal"
         android:visibility="invisible">
 
+        <com.rawr.simple.layout.ImageViewOpacity
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/rounded_corner"
+            android:padding="7dp"
+            android:src="@drawable/image"/>
+
+        <com.rawr.simple.layout.ImageViewOpacity
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:layout_marginRight="0dp"
+            android:background="@drawable/rounded_corner"
+            android:padding="7dp"
+            android:src="@drawable/dictionary"/>
     </com.rawr.simple.layout.SearchOptionsView>
 
     <com.rawr.simple.layout.SearchBox
@@ -37,16 +53,16 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_alignEnd="@id/autoCompleteTextView"
-        android:layout_alignTop="@id/autoCompleteTextView">
+        android:layout_alignTop="@id/autoCompleteTextView"
+        android:orientation="horizontal">
 
         <com.rawr.simple.layout.SearchModeButton
             android:id="@+id/searchButton"
             android:layout_width="25dp"
             android:layout_height="25dp"/>
 
-        <ImageView
+        <com.rawr.simple.layout.ImageViewOpacity
             android:id="@+id/searchOptionButton"
             android:layout_width="25dp"
             android:layout_height="25dp"

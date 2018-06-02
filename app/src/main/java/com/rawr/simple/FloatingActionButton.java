@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.rawr.simple.api.Search;
 import com.rawr.simple.layout.BackButtonAwareRelativeLayout;
 import com.rawr.simple.layout.EndlessRecyclerViewScrollListener;
+import com.rawr.simple.layout.ImageViewOpacity;
 import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.layout.SearchBox;
 import com.rawr.simple.layout.SearchModeButton;
@@ -40,7 +41,7 @@ public class FloatingActionButton {
   private final ImageView iconView;
   private final SearchBox searchBox;
   private final SearchModeButton searchBtn;
-  private final ImageView searchOptionButton;
+  private final ImageViewOpacity searchOptionButton;
   private final SearchOptionsView searchOptionsView;
 
   private final SearchImageContainer searchImageContainer;

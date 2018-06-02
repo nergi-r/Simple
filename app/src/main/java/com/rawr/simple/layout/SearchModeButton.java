@@ -12,8 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rawr.simple.R;
 
-@SuppressLint("AppCompatCustomView")
-public class SearchModeButton extends ImageView {
+public class SearchModeButton extends ImageViewOpacity {
   public Context context;
 
   public SearchModeButton(Context context) {

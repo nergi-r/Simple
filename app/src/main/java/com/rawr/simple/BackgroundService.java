@@ -76,7 +76,6 @@ public class BackgroundService extends Service
 
     windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
     if (windowManager != null) {
-      windowManager.addView(closeAreaView, closeAreaParams);
       windowManager.addView(rootView, params);
     }
 
@@ -112,6 +111,7 @@ public class BackgroundService extends Service
             if (lastAction == MotionEvent.ACTION_MOVE) {
               closeArea.setVisibility(View.INVISIBLE);
               if (closeArea.isCollideWith(icon)) stopSelf();
+              else windowManager.removeView(closeAreaView);
             }
             lastAction = motionEvent.getAction();
             return true;
@@ -128,6 +128,9 @@ public class BackgroundService extends Service
               closeArea.isCollideWith(icon);
 
               windowManager.updateViewLayout(rootView, params);
+              if (lastAction != MotionEvent.ACTION_MOVE) {
+                windowManager.addView(closeAreaView, closeAreaParams);
+              }
               lastAction = motionEvent.getAction();
             }
             return true;
@@ -167,7 +170,7 @@ public class BackgroundService extends Service
     super.onDestroy();
     if (rootView != null) {
       windowManager.removeView(rootView);
-      windowManager.removeViewImmediate(closeAreaView);
+      windowManager.removeView(closeAreaView);
     }
   }
 }
