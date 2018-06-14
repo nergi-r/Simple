@@ -13,7 +13,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rawr.simple.R;
 
 public class SearchModeButton extends ImageViewOpacity {
-  public Context context;
+  private Context context;
+  private String mode;
 
   public SearchModeButton(Context context) {
     super(context);
@@ -29,6 +30,10 @@ public class SearchModeButton extends ImageViewOpacity {
 
   public void init(Context context) {
     this.context = context;
+  }
+
+  public void setMode(String mode) {
+    this.mode = mode;
   }
 
   public void setToLoading() {

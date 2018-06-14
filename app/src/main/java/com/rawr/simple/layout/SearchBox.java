@@ -31,6 +31,7 @@ public class SearchBox extends AutoCompleteTextView {
     this.context = context;
     this.rootView = rootView;
     this.setVisibility(INVISIBLE);
+    this.setWidth(0);
   }
 
   public void toggle(boolean toggled) {

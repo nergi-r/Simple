@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.rawr.simple.layout.LayoutUtil;
 import com.rawr.simple.layout.SearchBox;
 import com.rawr.simple.layout.SearchModeButton;
 import com.rawr.simple.layout.SearchOptionsView;
+import com.rawr.simple.layout.TranslationWebView;
 import com.rawr.simple.search.image.SearchImageResult;
 import com.rawr.simple.search.image.SearchImageContainer;
 import com.rawr.simple.search.image.SearchImageResultAttributes;
@@ -47,6 +49,9 @@ public class FloatingActionButton {
   private final SearchImageContainer searchImageContainer;
   private final RelativeLayout.LayoutParams searchImageContainerParams;
 
+  private final TranslationWebView translationWebView;
+  private final RelativeLayout.LayoutParams translationWebViewParams;
+
   private EndlessRecyclerViewScrollListener scrollListener;
 
   private final SearchSuggestion searchSuggestion;
@@ -61,13 +66,12 @@ public class FloatingActionButton {
     searchBtn.init(context);
     searchBox = rootView.findViewById(R.id.autoCompleteTextView);
     searchBox.init(context, rootView);
-    searchOptionsView = rootView.findViewById(R.id.searchOptionsView);
+    searchOptionsView = rootView.findViewById(R.id.search_options_list);
     searchOptionsView.init(context);
     searchOptionButton = rootView.findViewById(R.id.searchOptionButton);
     searchOptionButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        System.out.println("Clicked");
         searchOptionsView.toggle();
       }
     });
@@ -105,6 +109,15 @@ public class FloatingActionButton {
       }
     };
     searchImageContainer.getRecyclerView().addOnScrollListener(scrollListener);
+
+    translationWebView = new TranslationWebView(context);
+    translationWebViewParams = new RelativeLayout.LayoutParams(
+        (int) LayoutUtil.pxFromDp(context, SEARCH_IMAGE_CONTAINER_SIZE),
+        (int) LayoutUtil.pxFromDp(context, SEARCH_IMAGE_CONTAINER_SIZE));
+    searchImageContainerParams.leftMargin = (int) LayoutUtil.pxFromDp(
+        context, SEARCH_IMAGE_CONTAINER_MARGIN);
+    searchImageContainerParams.topMargin = (int) LayoutUtil.pxFromDp(
+        context, SEARCH_IMAGE_CONTAINER_MARGIN);
   }
 
   public BackButtonAwareRelativeLayout getRootView() {
@@ -119,6 +132,7 @@ public class FloatingActionButton {
     toggleSearch(toggled);
     toggleSearchView(toggled);
     toggleIcon(toggled);
+    if (!toggled) searchOptionsView.toggleTo(false);
   }
 
   private void toggleIcon(boolean toggled) {
@@ -233,5 +247,11 @@ public class FloatingActionButton {
 
       }
     });
+  }
+
+  private void translate() {
+    rootView.addView(translationWebView.getWebView(),
+        0,
+        translationWebViewParams);
   }
 }
